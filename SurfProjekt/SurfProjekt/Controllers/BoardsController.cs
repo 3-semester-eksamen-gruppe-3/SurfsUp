@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SurfProjekt;
 using SurfProjekt.Data;
 using SurfProjekt.Models;
 
@@ -20,11 +21,31 @@ namespace SurfProjekt.Controllers
         }
 
         // GET: Boards
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index()
+        //{
+        //      return _context.Boards != null ? 
+        //                  View(await _context.Boards.ToListAsync()) :
+        //                  Problem("Entity set 'SurfProjektContext.Boards'  is null.");
+        //}
+
+        public async Task<IActionResult> Index(
+        string searchString,
+        int? pageNumber)
         {
-              return _context.Boards != null ? 
-                          View(await _context.Boards.ToListAsync()) :
-                          Problem("Entity set 'SurfProjektContext.Boards'  is null.");
+            var boards = from m in _context.Boards
+                         select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                //Hvorfor er ! bagved name og ikke contains?
+                boards = boards.Where(s => s.Name!.Contains(searchString)
+                                        || s.Type.Contains(searchString));
+            }
+            pageNumber = 1;
+            int pageSize = 2;
+            return View(await PaginatedList<Boards>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
+
+            return View(await boards.ToListAsync());
         }
 
         // GET: Boards/Details/5

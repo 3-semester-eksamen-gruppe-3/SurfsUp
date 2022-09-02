@@ -9,6 +9,15 @@
 <p>
     <a asp-action="Create">Opret ny</a>
 </p>
+
+<form asp-controller="Boards" asp-action="Index" method="get">
+    <p>
+        Navn: <input type="text" name="SearchString" />
+        <input type="submit" value="Søg" />
+        <a asp-action="Index">Vis alle</a>
+    </p>
+</form>
+
 <table class="table">
     <thead>
         <tr>
@@ -75,3 +84,19 @@
 }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
