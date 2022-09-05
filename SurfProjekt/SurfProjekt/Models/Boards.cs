@@ -30,5 +30,8 @@ namespace SurfProjekt.Models
 
         [Display(Name = "Udstyr")]
         public string? Equipment { get; set; }
+
+        [Display(Name = "")]
+        public string? Image { get; set; }
     }
 }
