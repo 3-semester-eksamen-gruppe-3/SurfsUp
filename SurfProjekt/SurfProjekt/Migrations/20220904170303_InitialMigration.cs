@@ -4,7 +4,7 @@
 
 namespace SurfProjekt.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,7 +20,7 @@ namespace SurfProjekt.Migrations
                     Thickness = table.Column<double>(type: "float", nullable: false),
                     Volume = table.Column<double>(type: "float", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<double>(type: "float", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Equipment = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>

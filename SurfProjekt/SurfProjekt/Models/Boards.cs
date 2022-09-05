@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SurfProjekt.Models
 {
@@ -24,7 +25,8 @@ namespace SurfProjekt.Models
         public string Type { get; set; }
 
         [Display(Name = "Pris (€)")]
-        public double Price { get; set; }
+        [Column(TypeName= "decimal(18,2")]
+        public decimal Price { get; set; }
 
         [Display(Name = "Udstyr")]
         public string? Equipment { get; set; }

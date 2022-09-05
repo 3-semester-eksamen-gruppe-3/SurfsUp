@@ -1,6 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Localization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SurfProjekt.Data;
+using System.Globalization;
+
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SurfProjektContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SurfProjektContext") ?? throw new InvalidOperationException("Connection string 'SurfProjektContext' not found.")));
@@ -9,6 +13,26 @@ builder.Services.AddDbContext<SurfProjektContext>(options =>
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+var defaultDateCulture = "de-DE";
+var ci = new CultureInfo(defaultDateCulture);
+ci.NumberFormat.NumberDecimalSeparator = ".";
+ci.NumberFormat.CurrencyDecimalSeparator = ".";
+
+// Configure the Localization middleware
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(ci),
+    SupportedCultures = new List<CultureInfo>
+    {
+        ci,
+    },
+    SupportedUICultures = new List<CultureInfo>
+    {
+        ci,
+    }
+});
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

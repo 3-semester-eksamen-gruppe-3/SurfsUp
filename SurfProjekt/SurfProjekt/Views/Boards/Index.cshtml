@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SurfProjekt.Models.Boards>
+﻿@model PaginatedList<SurfProjekt.Models.Boards>
 
 @{
     ViewData["Title"] = "Index";
@@ -22,28 +22,28 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Length)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Length)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Width)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Width)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Thickness)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Thickness)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Volume)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Volume)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Type)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Type)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Equipment)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Equipment)
             </th>
             <th></th>
         </tr>
@@ -92,11 +92,13 @@
 
 <a asp-action="Index"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
    class="btn btn-default @prevDisabled">
     Previous
 </a>
 <a asp-action="Index"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
    class="btn btn-default @nextDisabled">
     Next
 </a>

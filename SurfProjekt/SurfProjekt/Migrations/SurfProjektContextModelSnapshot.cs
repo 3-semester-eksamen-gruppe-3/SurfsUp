@@ -38,8 +38,8 @@ namespace SurfProjekt.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<double>("Thickness")
                         .HasColumnType("float");
