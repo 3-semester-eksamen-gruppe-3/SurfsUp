@@ -22,6 +22,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Image)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.FirstOrDefault().Name)
             </th>
             <th>
@@ -51,6 +54,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+               <img src="@item.Image" width="100px" height="100px" alt="Billede ikke fundet" >
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
