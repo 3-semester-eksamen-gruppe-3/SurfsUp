@@ -29,11 +29,23 @@ namespace SurfProjekt.Controllers
         //}
 
         public async Task<IActionResult> Index(
+        string currentFilter,
         string searchString,
         int? pageNumber)
         {
             var boards = from m in _context.Boards
                          select m;
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -41,11 +53,11 @@ namespace SurfProjekt.Controllers
                 boards = boards.Where(s => s.Name!.Contains(searchString)
                                         || s.Type.Contains(searchString));
             }
-            pageNumber = 1;
+            
             int pageSize = 2;
             return View(await PaginatedList<Boards>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
 
-            return View(await boards.ToListAsync());
+  
         }
 
         // GET: Boards/Details/5

@@ -11,8 +11,8 @@ using SurfProjekt.Data;
 namespace SurfProjekt.Migrations
 {
     [DbContext(typeof(SurfProjektContext))]
-    [Migration("20220823080953_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20220904170303_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -40,8 +40,8 @@ namespace SurfProjekt.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<double>("Thickness")
                         .HasColumnType("float");
