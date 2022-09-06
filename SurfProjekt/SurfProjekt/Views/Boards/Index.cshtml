@@ -1,5 +1,8 @@
 ﻿@model PaginatedList<SurfProjekt.Models.Boards>
 
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
 @{
     ViewData["Title"] = "Index";
 }
@@ -81,11 +84,21 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Equipment)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Rediger</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Detaljer</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Slet</a>
-            </td>
+            @if((await AuthorizationService.AuthorizeAsync(User, "Admin")).Succeeded){
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Rediger</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Detaljer</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Slet</a>
+                </td>
+
+            }
+            else
+            {
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Udlej</a>
+                </td>
+                    
+            }
         </tr>
 }
     </tbody>
