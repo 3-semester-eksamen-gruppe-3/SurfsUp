@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +14,13 @@ namespace SurfProjekt.Controllers
 {
     public class BoardsController : Controller
     {
+        private UserManager<IdentityUser> userManager;
         private readonly SurfProjektContext _context;
 
-        public BoardsController(SurfProjektContext context)
+        public BoardsController(SurfProjektContext context, UserManager<IdentityUser> UserManager)
         {
             _context = context;
+            userManager = UserManager;
         }
 
         // GET: Boards
@@ -167,6 +170,29 @@ namespace SurfProjekt.Controllers
 
             return View(boards);
         }
+
+        [HttpPost, ActionName("Rent")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RentConfirmed(int id)
+        {
+            if (_context.Boards == null)
+            {
+                return Problem("Entity set 'SurfProjektContext.Boards'  is null.");
+            }
+            var boards = await _context.Boards.FindAsync(id);
+            if (boards != null)
+            {
+                Lease lease = new Lease();
+                lease.BoardID = id;
+                lease.UserID = int.Parse(userManager.GetUserId(User));
+                boards.leases.Add(lease);
+                boards.IsRented = true;
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
 
         // GET: Boards/Delete/5
         public async Task<IActionResult> Delete(int? id)

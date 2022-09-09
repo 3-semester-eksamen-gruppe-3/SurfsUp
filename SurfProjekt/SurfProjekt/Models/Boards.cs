@@ -33,5 +33,9 @@ namespace SurfProjekt.Models
 
         [Display(Name = "")]
         public string? Image { get; set; }
+
+        public bool IsRented { get; set; }  
+
+        public ICollection<Lease> leases { get; set; }
     }
 }
