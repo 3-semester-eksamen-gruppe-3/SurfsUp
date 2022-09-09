@@ -151,6 +151,23 @@ namespace SurfProjekt.Controllers
             return View(boards);
         }
 
+        public async Task<IActionResult> Rent(int? id)
+        {
+            if (id == null || _context.Boards == null)
+            {
+                return NotFound();
+            }
+
+            var boards = await _context.Boards
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (boards == null)
+            {
+                return NotFound();
+            }
+
+            return View(boards);
+        }
+
         // GET: Boards/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
