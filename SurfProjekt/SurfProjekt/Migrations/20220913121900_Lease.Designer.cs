@@ -12,7 +12,7 @@ using SurfProjekt.Data;
 namespace SurfProjekt.Migrations
 {
     [DbContext(typeof(SurfProjektContext))]
-    [Migration("20220909094727_Lease")]
+    [Migration("20220913121900_Lease")]
     partial class Lease
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -283,11 +283,11 @@ namespace SurfProjekt.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("TimeFrame")
-                        .HasColumnType("float");
-
-                    b.Property<int>("UserID")
+                    b.Property<int>("TimeFrame")
                         .HasColumnType("int");
+
+                    b.Property<string>("UserID")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("LeaseID");
 

@@ -281,11 +281,11 @@ namespace SurfProjekt.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("TimeFrame")
-                        .HasColumnType("float");
-
-                    b.Property<int>("UserID")
+                    b.Property<int>("TimeFrame")
                         .HasColumnType("int");
+
+                    b.Property<string>("UserID")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("LeaseID");
 

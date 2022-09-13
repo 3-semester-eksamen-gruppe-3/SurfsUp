@@ -36,8 +36,9 @@ namespace SurfProjekt.Controllers
         string searchString,
         int? pageNumber)
         {
-            var boards = from m in _context.Boards
-                         select m;
+            var boards = from b in _context.Boards 
+                         where b.IsRented == false
+                         select b;
 
             if (searchString != null)
             {
@@ -180,11 +181,11 @@ namespace SurfProjekt.Controllers
                 return Problem("Entity set 'SurfProjektContext.Boards'  is null.");
             }
             var boards = await _context.Boards.FindAsync(id);
+            var user = await userManager.GetUserAsync(User);
             if (boards != null)
             {
-                Lease lease = new Lease();
-                lease.BoardID = id;
-                lease.UserID = int.Parse(userManager.GetUserId(User));
+                boards.leases = new List<Lease>();
+                Lease lease = new Lease(id, userManager.GetUserId(User), 2, DateTime.Now);
                 boards.leases.Add(lease);
                 boards.IsRented = true;
             }
