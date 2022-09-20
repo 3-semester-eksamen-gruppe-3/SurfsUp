@@ -37,10 +37,33 @@ namespace SurfProjekt.Controllers
         string searchString,
         int? pageNumber)
         {
-            var boards = from b in _context.Boards
-                         where b.IsRented == false
-                         select b;
+            //var boards = from b in _context.Boards.
+            //             Include(b => b.leases).
+            //             AsNoTracking().
+            //             Where(b => b.IsRented != true);
+            var boards = _context.Boards.Include(b => b.leases).AsNoTracking();
 
+            foreach(var board in boards)
+            {
+                foreach(var lease in board.leases)
+                {
+                    if (lease.Date < DateTime.Now && lease.EndTime > DateTime.Now)
+                    {
+                        board.IsRented = true;
+                    }
+                    else
+                    {
+                        board.IsRented = false;
+                    }
+                    _context.Update(board);
+
+                }
+            }
+            await _context.SaveChangesAsync();
+
+            boards = from b in boards
+                     where !(b.IsRented == true)
+                     select b;
 
             if (searchString != null)
             {
@@ -56,9 +79,10 @@ namespace SurfProjekt.Controllers
             if (!String.IsNullOrEmpty(searchString))
             {
                 //Hvorfor er ! bagved name og ikke contains?
-                boards = boards.Where(s => s.Name!.Contains(searchString)
-                                        || s.Type.Contains(searchString));
+                boards = boards.Where(b => b.Name!.Contains(searchString)
+                                        || b.Type.Contains(searchString));
             }
+
             
             int pageSize = 4;
             return View(await PaginatedList<Boards>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
