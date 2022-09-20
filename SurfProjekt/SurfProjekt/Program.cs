@@ -4,9 +4,27 @@ using Microsoft.Extensions.DependencyInjection;
 using SurfProjekt.Data;
 using System.Globalization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.HttpOverrides;
 
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var configuration = builder.Configuration;
+
+builder.Services.AddRazorPages();
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
+
+//Added authentication service for Facebook.
+services.AddAuthentication().AddFacebook(facebookOptions =>
+{
+    facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
+    facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
+});
+
 builder.Services.AddDbContext<SurfProjektContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SurfProjektContext") ?? throw new InvalidOperationException("Connection string 'SurfProjektContext' not found.")));
 
@@ -23,25 +41,13 @@ builder.Services.AddAuthorization(options =>
 });
 
 var app = builder.Build();
+app.UseForwardedHeaders();
 
-var defaultDateCulture = "de-DE";
-var ci = new CultureInfo(defaultDateCulture);
-ci.NumberFormat.NumberDecimalSeparator = ".";
-ci.NumberFormat.CurrencyDecimalSeparator = ".";
+var cultureInfo = new CultureInfo("da-DK");
+cultureInfo.NumberFormat.CurrencyDecimalSeparator = ",";
 
-// Configure the Localization middleware
-app.UseRequestLocalization(new RequestLocalizationOptions
-{
-    DefaultRequestCulture = new RequestCulture(ci),
-    SupportedCultures = new List<CultureInfo>
-    {
-        ci,
-    },
-    SupportedUICultures = new List<CultureInfo>
-    {
-        ci,
-    }
-});
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 
 // Configure the HTTP request pipeline.
