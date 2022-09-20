@@ -264,7 +264,7 @@ namespace SurfProjekt.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Boards");
+                    b.ToTable("Boards", (string)null);
                 });
 
             modelBuilder.Entity("SurfProjekt.Models.Lease", b =>
@@ -294,7 +294,7 @@ namespace SurfProjekt.Migrations
 
                     b.HasIndex("BoardID");
 
-                    b.ToTable("Lease");
+                    b.ToTable("Lease", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -34,20 +34,32 @@ namespace SurfProjekt.Models
         [Display(Name = "")]
         public string? Image { get; set; }
 
-        public bool IsRented { get; set; }
+        private bool isRented;
+        public bool IsRented
+        {
+            get
+            {
+                if (leases != null)
+                {
+                    foreach (Lease l in leases)
+                    {
+                        if (DateTime.Now > l.Date && DateTime.Now < l.EndTime)
+                            return true;
+                    }
+                }
+                return false;
+            }
+            set
+            {
+                isRented = value;
+            }
+        }
 
         public ICollection<Lease> leases { get; set; }
 
         public Boards()
         {
-            if (leases != null)
-            {
-                foreach (Lease l in leases)
-                {
-                    if (DateTime.Now > l.Date && DateTime.Now < l.EndTime)
-                        IsRented = true;
-                }
-            }
+
         }
     }
 
