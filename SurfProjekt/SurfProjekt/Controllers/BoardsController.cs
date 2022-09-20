@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using SurfProjekt;
 using SurfProjekt.Data;
 using SurfProjekt.Models;
+using SurfProjekt.Models.ViewModels;
 
 namespace SurfProjekt.Controllers
 {
@@ -36,9 +37,10 @@ namespace SurfProjekt.Controllers
         string searchString,
         int? pageNumber)
         {
-            var boards = from b in _context.Boards 
+            var boards = from b in _context.Boards
                          where b.IsRented == false
                          select b;
+
 
             if (searchString != null)
             {
@@ -162,19 +164,20 @@ namespace SurfProjekt.Controllers
                 return NotFound();
             }
 
-            var boards = await _context.Boards
+            var boardleasing = new BoardLeasing();
+            boardleasing.Board = await _context.Boards
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (boards == null)
+            if (boardleasing.Board == null)
             {
                 return NotFound();
             }
 
-            return View(boards);
+            return View(boardleasing);
         }
 
         [HttpPost, ActionName("Rent")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RentConfirmed(int id)
+        public async Task<IActionResult> RentConfirmed(int id, [Bind("TimeFrame")] Lease lease)
         {
             if (_context.Boards == null)
             {
@@ -185,9 +188,12 @@ namespace SurfProjekt.Controllers
             if (boards != null)
             {
                 boards.leases = new List<Lease>();
-                Lease lease = new Lease(id, userManager.GetUserId(User), 2, DateTime.Now);
+                lease.UserID = userManager.GetUserId(User);
+                lease.Date = DateTime.Now;
+                lease.EndTime = lease.Date.AddHours(lease.TimeFrame);
+                lease.BoardID = id;
                 boards.leases.Add(lease);
-                boards.IsRented = true;
+                //boards.IsRented = true;
             }
 
             await _context.SaveChangesAsync();

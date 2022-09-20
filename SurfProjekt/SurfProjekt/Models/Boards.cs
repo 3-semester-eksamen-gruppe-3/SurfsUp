@@ -44,7 +44,7 @@ namespace SurfProjekt.Models
             {
                 foreach (Lease l in leases)
                 {
-                    if (!(DateTime.Now > (l.Date + new TimeSpan(l.TimeFrame, 0, 0))))
+                    if (DateTime.Now > l.Date && DateTime.Now < l.EndTime)
                         IsRented = true;
                 }
             }
