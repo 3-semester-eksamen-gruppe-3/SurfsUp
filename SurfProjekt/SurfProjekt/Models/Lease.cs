@@ -6,7 +6,18 @@ namespace SurfProjekt.Models
         public int LeaseID { get; set; }
         public DateTime Date { get; set; }
         public int TimeFrame { get; set; }
-
+        private DateTime endTime;
+        public DateTime EndTime
+        {
+            get
+            {
+                return Date.AddHours(TimeFrame);
+            }
+            set
+            {
+                endTime = value;
+            }
+        }
         public int BoardID { get; set; }
         public Boards Board { get; set; }
         public string UserID { get; set; }
@@ -15,13 +26,12 @@ namespace SurfProjekt.Models
         {
 
         }
-        public Lease(int boardId, string userId, int timeFrame, DateTime date)
+        public Lease(int boardId, string userId, DateTime date, int timeFrame)
         {
             BoardID = boardId;
             UserID = userId;
-            TimeFrame = timeFrame;
             Date = date;
-
+            TimeFrame = timeFrame;
         }
     }
 }
