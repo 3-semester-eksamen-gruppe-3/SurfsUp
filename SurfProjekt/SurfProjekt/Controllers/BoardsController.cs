@@ -41,6 +41,7 @@ namespace SurfProjekt.Controllers
             //             Include(b => b.leases).
             //             AsNoTracking().
             //             Where(b => b.IsRented != true);
+            BoardHierarchy boardHierarchy = new();
             var boards = _context.Boards.Include(b => b.leases).AsNoTracking();
 
             foreach(var board in boards)
@@ -83,9 +84,10 @@ namespace SurfProjekt.Controllers
                                         || b.Type.Contains(searchString));
             }
 
-            
             int pageSize = 4;
-            return View(await PaginatedList<Boards>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
+            boardHierarchy.Boards = await PaginatedList<Boards>.CreateAsync(boards, pageNumber ?? 1, pageSize);
+
+            return View(boardHierarchy);
 
   
         }
