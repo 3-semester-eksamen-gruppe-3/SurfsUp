@@ -5,6 +5,7 @@ using SurfProjekt.Data;
 using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Authentication.Facebook;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,15 +16,21 @@ builder.Services.AddRazorPages();
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders =
-        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+       ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 });
 
 //Added authentication service for Facebook.
-services.AddAuthentication().AddFacebook(facebookOptions =>
-{
-    facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
-    facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
-});
+services.AddAuthentication()
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    })
+.AddFacebook(options =>
+    {
+     options.AppId = configuration["Authentication:Facebook:AppId"];
+     options.AppSecret = configuration["Authentication:Facebook:AppSecret"];
+    });
 
 builder.Services.AddDbContext<SurfProjektContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SurfProjektContext") ?? throw new InvalidOperationException("Connection string 'SurfProjektContext' not found.")));
