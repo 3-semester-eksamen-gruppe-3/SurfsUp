@@ -28,9 +28,6 @@ namespace SurfProjekt.Models
         [Column(TypeName= "decimal(18,2")]
         public decimal Price { get; set; }
 
-        [Display(Name = "Udstyr")]
-        public string? Equipment { get; set; }
-
         [Display(Name = "")]
         public string? Image { get; set; }
 

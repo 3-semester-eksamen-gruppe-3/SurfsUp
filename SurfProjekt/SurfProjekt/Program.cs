@@ -19,11 +19,11 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 });
 
 //Added authentication service for Facebook.
-services.AddAuthentication().AddFacebook(facebookOptions =>
-{
-    facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
-    facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
-});
+//services.AddAuthentication().AddFacebook(facebookOptions =>
+//{
+//    facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
+//    facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
+//});
 
 builder.Services.AddDbContext<SurfProjektContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SurfProjektContext") ?? throw new InvalidOperationException("Connection string 'SurfProjektContext' not found.")));

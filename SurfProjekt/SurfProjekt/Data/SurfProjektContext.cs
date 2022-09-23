@@ -18,5 +18,8 @@ namespace SurfProjekt.Data
         public DbSet<SurfProjekt.Models.Boards> Boards { get; set; } = default!;
         public DbSet<SurfProjekt.Models.Lease> Lease { get; set; } = default!;
 
+        public DbSet<SurfProjekt.Models.Equipment> Equipment { get; set; } = default!;
+        public DbSet<SurfProjekt.Models.SUPboard> SUPboards { get; set; } = default!;
+
     }
 }
