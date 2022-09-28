@@ -20,6 +20,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 });
 
 //Added authentication service for Facebook.
+
 services.AddAuthentication()
     .AddGoogle(options =>
     {
