@@ -23,13 +23,13 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 services.AddAuthentication()
     .AddGoogle(options =>
     {
-        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+        options.ClientId = "1013365460994-ffu66q30blac5ak63sgg8qsmmmuagv4a.apps.googleusercontent.com";
+        options.ClientSecret = "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";
     })
 .AddFacebook(options =>
     {
-     options.AppId = configuration["Authentication:Facebook:AppId"];
-     options.AppSecret = configuration["Authentication:Facebook:AppSecret"];
+        options.AppId = "1857945164555064";
+        options.AppSecret = "87f363592bf4b7a3d94f9ca823d33a82";
     });
 
 builder.Services.AddDbContext<SurfProjektContext>(options =>
@@ -69,7 +69,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication();;
+app.UseAuthentication();
 
 app.UseAuthorization();
 
