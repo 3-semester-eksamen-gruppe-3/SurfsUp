@@ -6,7 +6,7 @@ using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Authentication.Facebook;
-
+using SurfProjekt.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -36,8 +36,10 @@ services.AddAuthentication()
 builder.Services.AddDbContext<SurfProjektContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SurfProjektContext") ?? throw new InvalidOperationException("Connection string 'SurfProjektContext' not found.")));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<SurfProjektContext>();
+    
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -79,3 +81,13 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 app.Run();
+
+void AddAuthorizationPolicies()
+{
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy(ConstantsRole.Policies.RequireAdmin, policy => policy.RequireRole(ConstantsRole.Roles.Admin));
+        options.AddPolicy(ConstantsRole.Policies.RequireUser, policy => policy.RequireRole(ConstantsRole.Roles.User));
+
+    });
+}
