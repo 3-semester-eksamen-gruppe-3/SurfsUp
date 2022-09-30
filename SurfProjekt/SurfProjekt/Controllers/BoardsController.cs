@@ -15,8 +15,11 @@ using SurfProjekt.Models.ViewModels;
 namespace SurfProjekt.Controllers
 {
     
-    [Authorize(Roles = $"{ConstantsRole.Roles.Admin}, {ConstantsRole.Roles.User}")]
-    [AllowAnonymous]
+    //Denne línje angiver at begge roller, admin og user, har adgang til boards-siden.
+    //[Authorize(Roles = $"{ConstantsRole.Roles.Admin}, {ConstantsRole.Roles.User}")]
+    
+    //Denne linje sørger for, at man godt kan se borads-siden uden at oprette en bruger.
+    //[AllowAnonymous]
     public class BoardsController : Controller
     {
         private UserManager<IdentityUser> userManager;

@@ -8,7 +8,7 @@
 }
 
 <h1>Oversigt</h1>
-@if((await AuthorizationService.AuthorizeAsync(User, "Admin")).Succeeded)
+@if ((await AuthorizationService.AuthorizeAsync(User, ConstantsRole.Roles.Admin)).Succeeded)
 {
     <p>
         <a asp-action="Create">Opret ny</a>
@@ -86,7 +86,7 @@
            @* <td>
                 @Html.DisplayFor(modelItem => item.Equipment)
             </td>*@
-            @if((await AuthorizationService.AuthorizeAsync(User, "Admin")).Succeeded){
+                @if ((await AuthorizationService.AuthorizeAsync(User, ConstantsRole.Roles.Admin)).Succeeded){
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Rediger</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Detaljer</a> |
