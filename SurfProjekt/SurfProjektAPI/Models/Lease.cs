@@ -19,7 +19,7 @@ namespace SurfProjekt.Models
             }
         }
         public int BoardID { get; set; }
-        public Boards Board { get; set; }
+        public Boards? Board { get; set; }
         public string UserID { get; set; }
         
         public Lease()
