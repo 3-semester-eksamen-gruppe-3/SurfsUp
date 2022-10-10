@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 using SurfProjekt;
 using SurfProjekt.Data;
 using SurfProjekt.Models;
@@ -224,17 +226,32 @@ namespace SurfProjekt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RentConfirmed(int id, [Bind("TimeFrame")] Lease lease)
         {
-            string URL = $"https://localhost:7244/api/Boards/Rent/{id}";
+            var UserID = userManager.GetUserId(User);
+            string URL = $"https://localhost:7244/api/Boards/Rent";
             HttpClient boardsClient = new HttpClient();
 
-           
-            var user = await userManager.GetUserAsync(User);
-            lease.UserID = userManager.GetUserId(User);
+            lease.BoardID = id;
+            lease.UserID = UserID;
+            lease.Date = DateTime.Now;
 
-            await boardsClient.PostAsJsonAsync<Lease>(URL,lease);  
+            await boardsClient.PostAsJsonAsync<Lease>(URL, lease);
 
             return RedirectToAction(nameof(Index));
         }
+
+        //[HttpPost, ActionName("Rent")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> RentConfirmed(int id, [Bind("TimeFrame")] Lease lease)
+        //{
+        //    var UserID = userManager.GetUserId(User);
+        //    string URL = $"https://localhost:7244/api/Boards/Rent/{id}/{UserID}/{lease.TimeFrame}";
+        //    HttpClient boardsClient = new HttpClient();
+
+        //    await boardsClient.GetAsync(URL);
+
+        //    return RedirectToAction(nameof(Index));
+        //}
+
 
 
         // GET: Boards/Delete/5

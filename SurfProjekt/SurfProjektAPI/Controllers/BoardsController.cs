@@ -46,25 +46,22 @@ namespace SurfProjektAPI.Controllers
             return boards;
         }
 
-        [HttpPost("Rent/{id}")]
-        public async Task<ActionResult<Boards>> Rent(int id, [FromBody]Lease lease)
+        [HttpPost("Rent")]
+        public async Task<ActionResult<Boards>> Rent([FromBody] Lease lease)
         {
             if (_context.Boards == null)
             {
                 return Problem("Entity set 'SurfProjektContext.Boards'  is null.");
             }
-            var boards = await _context.Boards.FindAsync(id);
+            var boards = await _context.Boards.FindAsync(lease.BoardID);
             //var user = await userManager.GetUserAsync(User);
             if (boards == null)
             {
                 return NotFound();
             }
-            
 
             boards.leases = new List<Lease>();
-            lease.Date = DateTime.Now;
-            lease.EndTime = lease.Date.AddHours(lease.TimeFrame);
-            lease.BoardID = id;
+
             boards.leases.Add(lease);
 
             //boards.IsRented = true;
@@ -72,6 +69,37 @@ namespace SurfProjektAPI.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+
+        //[HttpGet("Rent/{BoardID}/{TimeFrame}/{UserID}")]
+        //public async Task<ActionResult<Boards>> Rent([FromRoute] int BoardID, [FromRoute] int TimeFrame, [FromRoute] string UserID)
+        //{
+        //    if (_context.Boards == null)
+        //    {
+        //        return Problem("Entity set 'SurfProjektContext.Boards'  is null.");
+        //    }
+        //    var boards = await _context.Boards.FindAsync(BoardID);
+        //    //var user = await userManager.GetUserAsync(User);
+        //    if (boards == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    boards.leases = new List<Lease>();
+        //    Lease lease = new Lease()
+        //    {
+        //        Date = DateTime.Now,
+        //        TimeFrame = TimeFrame,
+        //        BoardID = BoardID,
+        //        UserID = UserID
+        //    };
+
+        //    boards.leases.Add(lease);
+
+        //    //boards.IsRented = true;
+
+        //    await _context.SaveChangesAsync();
+        //    return Ok();
+        //}
 
 
         // PUT: api/Boards/5
