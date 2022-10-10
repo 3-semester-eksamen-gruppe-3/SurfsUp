@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -15,10 +16,10 @@ using static System.Net.WebRequestMethods;
 
 namespace SurfProjekt.Controllers
 {
-    
+
     //Denne línje angiver at begge roller, admin og user, har adgang til boards-siden.
     //[Authorize(Roles = $"{ConstantsRole.Roles.Admin}, {ConstantsRole.Roles.User}")]
-    
+
     //Denne linje sørger for, at man godt kan se borads-siden uden at oprette en bruger.
     //[AllowAnonymous]
     public class BoardsController : Controller
@@ -51,14 +52,14 @@ namespace SurfProjekt.Controllers
             //             Where(b => b.IsRented != true);
             string URL = "https://localhost:7244/api/Boards";
             BoardHierarchy boardHierarchy = new();
-            HttpClient boardsClient= new HttpClient();
-            var boards= await boardsClient.GetFromJsonAsync<IEnumerable<Boards>>(URL);
+            HttpClient boardsClient = new HttpClient();
+            var boards = await boardsClient.GetFromJsonAsync<IEnumerable<Boards>>(URL);
 
             //var boards = _context.Boards.Include(b => b.leases).AsNoTracking();
 
-            foreach(var board in boards)
+            foreach (var board in boards)
             {
-                foreach(var lease in board.leases)
+                foreach (var lease in board.leases)
                 {
                     if (lease.Date < DateTime.Now && lease.EndTime > DateTime.Now)
                     {
@@ -101,7 +102,7 @@ namespace SurfProjekt.Controllers
 
             return View(boardHierarchy);
 
-  
+
         }
 
         // GET: Boards/Details/5
@@ -224,15 +225,18 @@ namespace SurfProjekt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RentConfirmed(int id, [Bind("TimeFrame")] Lease lease)
         {
-            string URL = $"https://localhost:7244/api/Boards/Rent/{id}";
+            string URL = $"https://localhost:7244/api/Boards/Rent";
             HttpClient boardsClient = new HttpClient();
 
-           
+
             var user = await userManager.GetUserAsync(User);
             lease.UserID = userManager.GetUserId(User);
+            lease.Board = null;
+            lease.BoardID = id;
+            
 
-            await boardsClient.PostAsJsonAsync<Lease>(URL,lease);  
-
+            var response= await boardsClient.PostAsJsonAsync<Lease>(URL, lease);
+            response.EnsureSuccessStatusCode();
             return RedirectToAction(nameof(Index));
         }
 
@@ -269,14 +273,14 @@ namespace SurfProjekt.Controllers
             {
                 _context.Boards.Remove(boards);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool BoardsExists(int id)
         {
-          return (_context.Boards?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Boards?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

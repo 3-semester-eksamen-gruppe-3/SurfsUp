@@ -46,14 +46,14 @@ namespace SurfProjektAPI.Controllers
             return boards;
         }
 
-        [HttpPost("Rent/{id}")]
-        public async Task<ActionResult<Boards>> Rent(int id, [FromBody]Lease lease)
+        [HttpPost("Rent")]
+        public async Task<ActionResult<Boards>> Rent( [FromBody]Lease lease)
         {
             if (_context.Boards == null)
             {
                 return Problem("Entity set 'SurfProjektContext.Boards'  is null.");
             }
-            var boards = await _context.Boards.FindAsync(id);
+            var boards = await _context.Boards.FindAsync(lease.BoardID);
             //var user = await userManager.GetUserAsync(User);
             if (boards == null)
             {
@@ -64,7 +64,7 @@ namespace SurfProjektAPI.Controllers
             boards.leases = new List<Lease>();
             lease.Date = DateTime.Now;
             lease.EndTime = lease.Date.AddHours(lease.TimeFrame);
-            lease.BoardID = id;
+            //lease.BoardID = id;
             boards.leases.Add(lease);
 
             //boards.IsRented = true;
