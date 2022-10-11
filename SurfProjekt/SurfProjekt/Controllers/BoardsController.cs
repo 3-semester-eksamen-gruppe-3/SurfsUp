@@ -51,7 +51,16 @@ namespace SurfProjekt.Controllers
             //             Include(b => b.leases).
             //             AsNoTracking().
             //             Where(b => b.IsRented != true);
-            string URL = "https://localhost:7244/api/Boards";
+            string URL;
+            if (User.Identity.IsAuthenticated)
+            {
+                URL = "https://localhost:7244/api/Boards?api-version=2.0";
+            }
+            else
+            {
+                URL = "https://localhost:7244/api/Boards?api-version=1.0";
+            }
+
             BoardHierarchy boardHierarchy = new();
             HttpClient boardsClient= new HttpClient();
             var boards= await boardsClient.GetFromJsonAsync<IEnumerable<Boards>>(URL);
@@ -114,7 +123,16 @@ namespace SurfProjekt.Controllers
                 return NotFound();
             }
 
-            string URL = $"https://localhost:7244/api/Boards/{id}";
+            string URL;
+            if (User.Identity.IsAuthenticated)
+            {
+                URL = $"https://localhost:7244/api/Boards/{id}?api-version=2.0";
+            }
+            else
+            {
+                URL = $"https://localhost:7244/api/Boards/{id}?api-version=1.0";
+            }
+
             HttpClient boardsClient = new HttpClient();
             var boards = await boardsClient.GetFromJsonAsync<Boards>(URL);
 
