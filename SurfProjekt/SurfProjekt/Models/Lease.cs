@@ -23,11 +23,13 @@ namespace SurfProjekt.Models
         }
         public int BoardID { get; set; }
         public Boards Board { get; set; }
-        public string UserID { get; set; }
+
+        public string? UserID { get; set; }
 
         //Det er en tracking property, som skal bruges til databasen for at se om en rækkes værdier har ændret sig.
         [Timestamp]
         public byte[] RowVersion { get; set; }
+
 
         public Lease()
         {

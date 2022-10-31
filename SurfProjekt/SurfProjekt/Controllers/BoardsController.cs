@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 using SurfProjekt;
 using SurfProjekt.Data;
 using SurfProjekt.Models;
 using SurfProjekt.Models.ViewModels;
+using static System.Net.WebRequestMethods;
 
 namespace SurfProjekt.Controllers
 {
@@ -48,8 +51,21 @@ namespace SurfProjekt.Controllers
             //             Include(b => b.leases).
             //             AsNoTracking().
             //             Where(b => b.IsRented != true);
+            string URL;
+            if (User.Identity.IsAuthenticated)
+            {
+                URL = "https://localhost:7244/api/Boards?api-version=2.0";
+            }
+            else
+            {
+                URL = "https://localhost:7244/api/Boards?api-version=1.0";
+            }
+
             BoardHierarchy boardHierarchy = new();
-            var boards = _context.Boards.Include(b => b.leases).AsNoTracking();
+            HttpClient boardsClient= new HttpClient();
+            var boards= await boardsClient.GetFromJsonAsync<IEnumerable<Boards>>(URL);
+
+            //var boards = _context.Boards.Include(b => b.leases).AsNoTracking();
 
             foreach(var board in boards)
             {
@@ -102,13 +118,24 @@ namespace SurfProjekt.Controllers
         // GET: Boards/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Boards == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var boards = await _context.Boards
-                .FirstOrDefaultAsync(m => m.Id == id);
+            string URL;
+            if (User.Identity.IsAuthenticated)
+            {
+                URL = $"https://localhost:7244/api/Boards/{id}?api-version=2.0";
+            }
+            else
+            {
+                URL = $"https://localhost:7244/api/Boards/{id}?api-version=1.0";
+            }
+
+            HttpClient boardsClient = new HttpClient();
+            var boards = await boardsClient.GetFromJsonAsync<Boards>(URL);
+
             if (boards == null)
             {
                 return NotFound();
@@ -235,14 +262,19 @@ namespace SurfProjekt.Controllers
 
         public async Task<IActionResult> Rent(int? id)
         {
-            if (id == null || _context.Boards == null)
+
+
+            if (id == null)
             {
                 return NotFound();
             }
 
+            string URL = $"https://localhost:7244/api/Boards/{id}";
+            HttpClient boardsClient = new HttpClient();
+            var boards = await boardsClient.GetFromJsonAsync<Boards>(URL);
+
             var boardleasing = new BoardLeasing();
-            boardleasing.Board = await _context.Boards
-                .FirstOrDefaultAsync(m => m.Id == id);
+            boardleasing.Board = boards;
             if (boardleasing.Board == null)
             {
                 return NotFound();
@@ -255,26 +287,32 @@ namespace SurfProjekt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RentConfirmed(int id, [Bind("TimeFrame")] Lease lease)
         {
-            if (_context.Boards == null)
-            {
-                return Problem("Entity set 'SurfProjektContext.Boards'  is null.");
-            }
-            var boards = await _context.Boards.FindAsync(id);
-            var user = await userManager.GetUserAsync(User);
-            if (boards != null)
-            {
-                boards.leases = new List<Lease>();
-                lease.UserID = userManager.GetUserId(User);
-                lease.Date = DateTime.Now;
-                lease.EndTime = lease.Date.AddHours(lease.TimeFrame);
-                lease.BoardID = id;
-                boards.leases.Add(lease);
-                //boards.IsRented = true;
-            }
+            var UserID = userManager.GetUserId(User);
+            string URL = $"https://localhost:7244/api/Boards/Rent";
+            HttpClient boardsClient = new HttpClient();
 
-            await _context.SaveChangesAsync();
+            lease.BoardID = id;
+            lease.UserID = UserID;
+            lease.Date = DateTime.Now;
+
+            await boardsClient.PostAsJsonAsync<Lease>(URL, lease);
+
             return RedirectToAction(nameof(Index));
         }
+
+        //[HttpPost, ActionName("Rent")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> RentConfirmed(int id, [Bind("TimeFrame")] Lease lease)
+        //{
+        //    var UserID = userManager.GetUserId(User);
+        //    string URL = $"https://localhost:7244/api/Boards/Rent/{id}/{UserID}/{lease.TimeFrame}";
+        //    HttpClient boardsClient = new HttpClient();
+
+        //    await boardsClient.GetAsync(URL);
+
+        //    return RedirectToAction(nameof(Index));
+        //}
+
 
 
         // GET: Boards/Delete/5

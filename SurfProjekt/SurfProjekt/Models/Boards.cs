@@ -31,7 +31,11 @@ namespace SurfProjekt.Models
         [Display(Name = "")]
         public string? Image { get; set; }
 
-        [ConcurrencyCheck]
+
+        //[ConcurrencyCheck]
+
+        public bool IsPremium { get; set; }
+
 
         private bool isRented;
         public bool IsRented

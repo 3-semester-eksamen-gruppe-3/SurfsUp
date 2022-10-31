@@ -12,14 +12,15 @@ using SurfProjektAPI.Data;
 
 namespace SurfProjektAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Boards")]
     [ApiController]
-    public class BoardsController : ControllerBase
+    [ApiVersion("1.0")]
+    public class BoardsControllerV1 : ControllerBase
     {
         private readonly SurfProjektContext _context;
         //private readonly UserManager<IdentityUser> userManager;
 
-        public BoardsController(SurfProjektContext context)
+        public BoardsControllerV1(SurfProjektContext context)
         {
             _context = context;
             //userManager = UserManager;
@@ -29,7 +30,8 @@ namespace SurfProjektAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Boards>>> GetBoards()
         {
-            return await _context.Boards.Include(b=> b.leases).AsNoTracking().ToListAsync();
+
+            return await _context.Boards.Include(b => b.leases).AsNoTracking().Where(b => b.IsPremium == false).ToListAsync();
         }
 
         // GET: api/Boards/5
@@ -43,28 +45,35 @@ namespace SurfProjektAPI.Controllers
                 return NotFound();
             }
 
+            if (boards.IsPremium)
+            {
+                return Unauthorized("Du har ikke tilladelse til at se dette surfboard. Log ind for at se den fulde oversigt.");
+            }
+
             return boards;
         }
 
-        [HttpPost("Rent/{id}")]
-        public async Task<ActionResult<Boards>> Rent(int id, [FromBody]Lease lease)
+        [HttpPost("Rent")]
+        public async Task<ActionResult<Boards>> Rent([FromBody] Lease lease)
         {
             if (_context.Boards == null)
             {
                 return Problem("Entity set 'SurfProjektContext.Boards'  is null.");
             }
-            var boards = await _context.Boards.FindAsync(id);
+            var boards = await _context.Boards.FindAsync(lease.BoardID);
             //var user = await userManager.GetUserAsync(User);
             if (boards == null)
             {
                 return NotFound();
             }
-            
+
+            if (boards.IsPremium)
+            {
+                return Unauthorized("Du har ikke tilladelse til at leje dette surfboard. Log ind for at få adgang til alle boards.");
+            }
 
             boards.leases = new List<Lease>();
-            lease.Date = DateTime.Now;
-            lease.EndTime = lease.Date.AddHours(lease.TimeFrame);
-            lease.BoardID = id;
+
             boards.leases.Add(lease);
 
             //boards.IsRented = true;

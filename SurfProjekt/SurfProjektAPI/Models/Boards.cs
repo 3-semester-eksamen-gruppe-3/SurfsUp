@@ -31,6 +31,8 @@ namespace SurfProjekt.Models
         [Display(Name = "")]
         public string? Image { get; set; }
 
+        public bool IsPremium { get; set; }
+
         private bool isRented;
         public bool IsRented
         {
