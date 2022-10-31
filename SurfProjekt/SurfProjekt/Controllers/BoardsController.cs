@@ -174,7 +174,7 @@ namespace SurfProjekt.Controllers
                 return NotFound();
             }
 
-            var boards = await _context.Boards.FindAsync(id);
+            var boards = await _context.Boards.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
             if (boards == null)
             {
                 return NotFound();
@@ -187,7 +187,7 @@ namespace SurfProjekt.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Length,Width,Thickness,Volume,Type,Price,Equipment,Image")] Boards boards)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Length,Width,Thickness,Volume,Type,Price,Equipment,Image, RowVersionBoards")] Boards boards)
         {
             if (id != boards.Id)
             {
@@ -196,25 +196,68 @@ namespace SurfProjekt.Controllers
 
             if (ModelState.IsValid)
             {
+                //_context.Entry(boards).Property("RowVersionBoard").OriginalValue = rowVersionBoard;
                 try
                 {
                     _context.Update(boards);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    if (!BoardsExists(boards.Id))
+                    var exceptionEntry = ex.Entries.Single();
+                    var clientValues = (Boards)exceptionEntry.Entity;
+                    var databaseEntry = exceptionEntry.GetDatabaseValues();
+                    if (databaseEntry == null)
                     {
-                        return NotFound();
+                        ModelState.AddModelError(string.Empty,
+                            "Unable to save changes. The department was deleted by another user.");
                     }
                     else
                     {
-                        throw;
+                        var databaseValues = (Boards)databaseEntry.ToObject();
+
+                        if (databaseValues.Name != clientValues.Name)
+                        {
+                            ModelState.AddModelError("Navn", $"Current value: {databaseValues.Name}");
+                        }
+                        if (databaseValues.Length != clientValues.Length)
+                        {
+                            ModelState.AddModelError("Længde", $"Current value: {databaseValues.Length}");
+                        }
+                        if (databaseValues.Width != clientValues.Width)
+                        {
+                            ModelState.AddModelError("Bredde", $"Current value: {databaseValues.Width}");
+                        }
+                        if (databaseValues.Thickness != clientValues.Thickness)
+                        {
+                            ModelState.AddModelError("Tykkelse", $"Current value: {databaseValues.Thickness}");
+                        }
+                        if (databaseValues.Volume != clientValues.Volume)
+                        {
+                            ModelState.AddModelError("Volume", $"Current value: {databaseValues.Volume}");
+                        }
+                        if (databaseValues.Type != clientValues.Type)
+                        {
+                            ModelState.AddModelError("Type", $"Current value: {databaseValues.Type}");
+                        }
+                        if (databaseValues.Price != clientValues.Price)
+                        {
+                            ModelState.AddModelError("Pris", $"Current value: {databaseValues.Price}");
+                        }
+                        ModelState.AddModelError(string.Empty, "The record you attempted to edit "
+                                + "was modified by another user after you got the original value. The "
+                                + "edit operation was canceled and the current values in the database "
+                                + "have been displayed. If you still want to edit this record, click "
+                                + "the Save button again. Otherwise click the Back to List hyperlink.");
+                        boards.RowVersionBoards = (byte[])databaseValues.RowVersionBoards;
+                        ModelState.Remove("RowVersionBoards");
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(boards);
+            
         }
 
         public async Task<IActionResult> Rent(int? id)
@@ -273,7 +316,7 @@ namespace SurfProjekt.Controllers
 
 
         // GET: Boards/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool? concurrencyError)
         {
             if (id == null || _context.Boards == null)
             {
@@ -281,33 +324,56 @@ namespace SurfProjekt.Controllers
             }
 
             var boards = await _context.Boards
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
+          
             if (boards == null)
             {
+                if (concurrencyError.GetValueOrDefault())
+                {
+                    return RedirectToAction(nameof(Index));
+                }
                 return NotFound();
             }
 
-            return View(boards);
+            if (concurrencyError.GetValueOrDefault())
+            {
+                ViewData["ConcurrencyErrorMessage"] = "The record you attempted to edit "
+                                + "was modified by another user after you got the original value. The "
+                                + "edit operation was canceled and the current values in the database "
+                                + "have been displayed. If you still want to edit this record, click "
+                                + "the Save button again. Otherwise click the Back to List hyperlink.";
+            }
+            return View(boards);         
         }
 
         // POST: Boards/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(Boards boards)
         {
-            if (_context.Boards == null)
+           
+
+            try
             {
-                return Problem("Entity set 'SurfProjektContext.Boards'  is null.");
+                if (await _context.Boards.AnyAsync(m => m.Id == boards.Id)) 
+                {
+                    
+                    _context.Boards.Remove(boards);
+                    await _context.SaveChangesAsync();
+                    
+                }
+                return RedirectToAction(nameof(Index));
+
             }
-            var boards = await _context.Boards.FindAsync(id);
-            if (boards != null)
+            catch (DbUpdateConcurrencyException)
             {
-                _context.Boards.Remove(boards);
+                return RedirectToAction(nameof(Delete), new { concurrencyError = true, id = boards.Id });
             }
             
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
+
+
+
 
         private bool BoardsExists(int id)
         {

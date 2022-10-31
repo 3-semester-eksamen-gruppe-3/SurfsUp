@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SurfProjekt.Data;
 
@@ -11,9 +12,10 @@ using SurfProjekt.Data;
 namespace SurfProjekt.Migrations
 {
     [DbContext(typeof(SurfProjektContext))]
-    partial class SurfProjektContextModelSnapshot : ModelSnapshot
+    [Migration("20221007082122_rowversion")]
+    partial class rowversion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -239,9 +241,6 @@ namespace SurfProjekt.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsPremium")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsRented")
                         .HasColumnType("bit");
 
@@ -253,11 +252,6 @@ namespace SurfProjekt.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2");
-
-                    b.Property<byte[]>("RowVersionBoards")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
 
                     b.Property<double>("Thickness")
                         .HasColumnType("float");
@@ -302,7 +296,6 @@ namespace SurfProjekt.Migrations
             modelBuilder.Entity("SurfProjekt.Models.Lease", b =>
                 {
                     b.Property<int>("LeaseID")
-                        .IsConcurrencyToken()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 

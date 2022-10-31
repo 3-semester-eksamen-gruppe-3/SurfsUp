@@ -6,6 +6,8 @@
 
 <h1>Slet</h1>
 
+<p class="text-danger">@ViewData["ConcurrencyErrorMessage"]</p>
+
 <h3>Er du sikker på at du vil slette dette?</h3>
 <div>
 @*    <h4>Boards</h4>
@@ -63,6 +65,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="RowVersionBoards"/>
         <input type="submit" value="Slet" class="btn btn-danger" /> |
         <a asp-action="Index">Tilbage til oversigt</a>
     </form>
