@@ -67,27 +67,27 @@ namespace SurfProjekt.Controllers
 
             //var boards = _context.Boards.Include(b => b.leases).AsNoTracking();
 
-            foreach(var board in boards)
-            {
-                foreach(var lease in board.leases)
-                {
-                    if (lease.Date < DateTime.Now && lease.EndTime > DateTime.Now)
-                    {
-                        board.IsRented = true;
-                    }
-                    else
-                    {
-                        board.IsRented = false;
-                    }
-                    _context.Update(board);
+            //foreach(var board in boards)
+            //{
+            //    foreach(var lease in board.leases)
+            //    {
+            //        if (lease.Date < DateTime.Now && lease.EndTime > DateTime.Now)
+            //        {
+            //            board.IsRented = true;
+            //        }
+            //        else
+            //        {
+            //            board.IsRented = false;
+            //        }
+            //        _context.Update(board);
 
-                }
-            }
-            await _context.SaveChangesAsync();
+            //    }
+            //}
+            //await _context.SaveChangesAsync();
 
-            boards = from b in boards
-                     where !(b.IsRented == true)
-                     select b;
+            //boards = from b in boards
+            //         where !(b.IsRented == true)
+            //         select b;
 
             if (searchString != null)
             {

@@ -30,8 +30,31 @@ namespace SurfProjektAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Boards>>> GetBoards()
         {
+            var boards = _context.Boards.Include(b => b.leases).AsNoTracking().Where(b => b.IsPremium == false);
 
-            return await _context.Boards.Include(b => b.leases).AsNoTracking().Where(b => b.IsPremium == false).ToListAsync();
+            foreach (var board in boards)
+            {
+                foreach(var lease in board.leases)
+                {
+                    if (lease.Date < DateTime.Now && lease.EndTime > DateTime.Now)
+                    {
+                        board.IsRented = true;
+                    }
+                    else
+                    {
+                        board.IsRented = false;
+                    }
+                    _context.Update(board);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            boards = from b in boards
+                     where !(b.IsRented == true)
+                     select b;
+
+            return await boards.ToListAsync<Boards>();
         }
 
         // GET: api/Boards/5
