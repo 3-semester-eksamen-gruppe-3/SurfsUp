@@ -64,6 +64,8 @@
     <div class="col-md-4">
         <form asp-action="Rent">
             <input type="hidden" asp-for="Board.Id" />
+            <input type="hidden" asp-for="Board.RowVersionBoards" />
+            <input type="hidden" asp-for="Lease.RowVersion" />
 @*            <div class="form-group">
                 <label asp-for="Lease.Date" class="control-label"></label>
                 <input asp-for="Lease.Date" class="form-control" />

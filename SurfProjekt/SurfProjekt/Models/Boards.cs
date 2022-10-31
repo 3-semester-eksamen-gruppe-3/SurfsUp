@@ -31,6 +31,8 @@ namespace SurfProjekt.Models
         [Display(Name = "")]
         public string? Image { get; set; }
 
+        [ConcurrencyCheck]
+
         private bool isRented;
         public bool IsRented
         {
@@ -51,6 +53,9 @@ namespace SurfProjekt.Models
                 isRented = value;
             }
         }
+
+        [Timestamp]
+        public byte[] RowVersionBoards { get; set; }
 
         public ICollection<Lease> leases { get; set; }
 

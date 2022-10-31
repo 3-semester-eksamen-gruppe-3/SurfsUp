@@ -52,12 +52,24 @@ builder.Services.AddAuthorization(options =>
 var app = builder.Build();
 
 //Vi sætter programmets sprog til dansk for at den anvender komma i stedet for punktum. 
-var cultureInfo = new CultureInfo("da-DK");
-cultureInfo.NumberFormat.CurrencyDecimalSeparator = ",";
+var defaultDateCulture = "da-DK";
+var ci = new CultureInfo(defaultDateCulture);
+ci.NumberFormat.NumberDecimalSeparator = ".";
+ci.NumberFormat.CurrencyDecimalSeparator = ".";
 
-CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-
+// Configure the Localization middleware
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(ci),
+    SupportedCultures = new List<CultureInfo>
+    {
+        ci,
+    },
+    SupportedUICultures = new List<CultureInfo>
+    {
+        ci,
+    }
+});
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
