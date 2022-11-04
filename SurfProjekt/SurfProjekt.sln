@@ -5,7 +5,7 @@ VisualStudioVersion = 17.2.32516.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfProjekt", "SurfProjekt\SurfProjekt.csproj", "{D2BF3FA1-B03F-469E-A999-506169D4BDB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurfProjektAPI", "SurfProjektAPI\SurfProjektAPI.csproj", "{1C6CE59B-6873-4537-8317-625049391D8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfProjektAPI", "SurfProjektAPI\SurfProjektAPI.csproj", "{1C6CE59B-6873-4537-8317-625049391D8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
