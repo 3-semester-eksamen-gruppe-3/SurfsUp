@@ -34,7 +34,7 @@ namespace SurfProjektAPI.Controllers
                     WindSpeed = response.list[i].wind.speed, 
                     WindDirection = response.list[i].wind.deg,
                     Temperature = response.list[i].main.temp,
-                    Desription = response.list[i].weather[0].description,
+                    Description = response.list[i].weather[0].description,
                     Time = DateTime.Parse(response.list[i].dt_txt),
                     City = city
 

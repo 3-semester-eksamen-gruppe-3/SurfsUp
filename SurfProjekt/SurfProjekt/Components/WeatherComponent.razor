@@ -5,13 +5,14 @@
 <PageTitle>Vejrudsigt</PageTitle>
 
 <h3>Vejrudsigt</h3>
-<input class="text" @bind=city/>
+<input class="text" @bind=city />
 <button @onclick="GetWeather">Vis vejrudsigt</button>
 
-@if(weatherForecasts != null){
+@if (weatherForecasts != null)
+{
     <h4>@weatherForecasts[0].City</h4>
 
-    <table cellpadding="5px">
+    <table cellpadding="10px">
         <tr>
             <th>Tidspunkt</th>
             <th>Temperatur</th>
@@ -24,7 +25,8 @@
         </tr>
         @foreach (var weather in weatherForecasts)
         {
-            @if(weather.Time.ToString("HH.mm") == "00.00"){
+            @if (weather.Time.ToString("HH.mm") == "00.00")
+            {
                 <tr>
                     <th>Tidspunkt</th>
                     <th>Temperatur</th>
@@ -38,7 +40,7 @@
             }
             <tr>
                 <td>@weather.Time.ToString("HH.mm")</td>
-                <td>@weather.Temperature °C</td>
+                <td>@Math.Round(weather.Temperature,1) °C</td>
                 <td>@weather.Description</td>
                 <td>@weather.WindSpeed m/s</td>
                 <td>@weather.WindDirection °</td>
@@ -62,9 +64,10 @@
         //weatherForecasts.Add(new Weather { WindDirection = 15, WindSpeed = 10, Temperature = 13, Description = "kdfkdjf", Time = (DateTime.Now.AddDays(1).AddHours(2)), City = "odense" });
     }
 
-    public void GetWeather(){
+    public async Task GetWeather()
+    {
         URL = $"https://localhost:7244/{city}";
-        weatherForecasts = httpClient.GetFromJsonAsync<List<Weather>>(URL).Result;
+        weatherForecasts = await httpClient.GetFromJsonAsync<List<Weather>>(URL);
     }
 
     public class Weather
