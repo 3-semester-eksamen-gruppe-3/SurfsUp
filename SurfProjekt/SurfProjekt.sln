@@ -7,6 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfProjekt", "SurfProjekt\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfProjektAPI", "SurfProjektAPI\SurfProjektAPI.csproj", "{1C6CE59B-6873-4537-8317-625049391D8A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfProjektBlazor.Client", "SurfProjektBlazor\Client\SurfProjektBlazor.Client.csproj", "{534CFBFD-08D9-401F-BEF6-0C2A06988D16}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfProjektBlazor.Server", "SurfProjektBlazor\Server\SurfProjektBlazor.Server.csproj", "{573E1CAD-2544-44C8-B765-2153B27D8425}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfProjektBlazor.Shared", "SurfProjektBlazor\Shared\SurfProjektBlazor.Shared.csproj", "{368C7FF6-2227-498B-9D34-260409DC977E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +27,18 @@ Global
 		{1C6CE59B-6873-4537-8317-625049391D8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C6CE59B-6873-4537-8317-625049391D8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C6CE59B-6873-4537-8317-625049391D8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{534CFBFD-08D9-401F-BEF6-0C2A06988D16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{534CFBFD-08D9-401F-BEF6-0C2A06988D16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{534CFBFD-08D9-401F-BEF6-0C2A06988D16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{534CFBFD-08D9-401F-BEF6-0C2A06988D16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{573E1CAD-2544-44C8-B765-2153B27D8425}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{573E1CAD-2544-44C8-B765-2153B27D8425}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{573E1CAD-2544-44C8-B765-2153B27D8425}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{573E1CAD-2544-44C8-B765-2153B27D8425}.Release|Any CPU.Build.0 = Release|Any CPU
+		{368C7FF6-2227-498B-9D34-260409DC977E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{368C7FF6-2227-498B-9D34-260409DC977E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{368C7FF6-2227-498B-9D34-260409DC977E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{368C7FF6-2227-498B-9D34-260409DC977E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
