@@ -1,0 +1,114 @@
+﻿@page "/BoardsList"
+@using Microsoft.AspNetCore.Authorization
+@using SurfProjektBlazor.Shared
+@inject IAuthorizationService AuthorizationService
+<h3>Surf Boards</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Image
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Length
+            </th>
+            <th>
+                Width
+            </th>
+            <th>
+                Thickness
+            </th>
+            <th>
+                Volume
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Price
+            </th>
+            @*<th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Board.Equipment)
+            </th>*@
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in boards)
+        {
+            <tr>
+                <td>
+                    <img src="@item.Image" width="100px" height="100px" alt="Billede ikke fundet">
+                </td>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.Length
+                </td>
+                <td>
+                    @item.Width
+                </td>
+                <td>
+                    @item.Thickness
+                </td>
+                <td>
+                    @item.Volume
+                </td>
+                <td>
+                    @item.Type
+                </td>
+                <td>
+                    @item.Price
+                </td>
+                @* <td>
+            @Html.DisplayFor(modelItem => item.Equipment)
+            </td>*@
+                @*@if ((AuthorizationService.AuthorizeAsync(User, ConstantsRole.Roles.Admin)).Succeeded)*@
+                @*{*@
+                <td>
+                    <button style="background-color:white;border:none" @onclick=Edit>Rediger</button> |
+                    <button style="background-color:white;border:none" @onclick=Details>Detaljer</button> |
+                    <button style="background-color:white;border:none" @onclick=Delete>Slet</button>
+                </td>
+
+                @*}*@
+                @*else*@
+                @*{*@
+                <td>
+                    <button style="background-color:white;border:none" @onclick=Details>Detaljer</button>|
+                    <button style="background-color:white;border:none" @onclick=Rent>Udlej</button>
+                </td>
+                @*}*@
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+    private List<Boards> boards = new List<Boards>(){new Boards()};
+
+    private async Task Rent(){
+        boards.Add(new Boards());
+    }
+
+    private async Task Details(){
+
+    }
+
+    private async Task Edit()
+    {
+
+    }
+
+    private async Task Delete()
+    {
+
+    }
+
+}
