@@ -2,6 +2,8 @@
 @using Microsoft.AspNetCore.Authorization
 @using SurfProjektBlazor.Shared
 @inject IAuthorizationService AuthorizationService
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
 <h3>Surf Boards</h3>
 
 <table class="table">
@@ -68,22 +70,21 @@
                 @* <td>
             @Html.DisplayFor(modelItem => item.Equipment)
             </td>*@
-                @*@if ((AuthorizationService.AuthorizeAsync(User, ConstantsRole.Roles.Admin)).Succeeded)*@
-                @*{*@
+@*                @if ((AuthorizationService.AuthorizeAsync(user, ConstantsRole.Roles.Admin)).Succeeded)
+                {*@
                 <td>
                     <button style="background-color:white;border:none" @onclick=Edit>Rediger</button> |
-                    <button style="background-color:white;border:none" @onclick=Details>Detaljer</button> |
+                    <button style="background-color:white;border:none" @onclick="() => Details(item.Id)">Detaljer</button> |
                     <button style="background-color:white;border:none" @onclick=Delete>Slet</button>
                 </td>
-
-                @*}*@
-                @*else*@
-                @*{*@
+@*                }
+                else
+                {*@
                 <td>
-                    <button style="background-color:white;border:none" @onclick=Details>Detaljer</button>|
+                    <button style="background-color:white;border:none" @onclick="() => Details(item.Id)">Detaljer</button>|
                     <button style="background-color:white;border:none" @onclick=Rent>Udlej</button>
                 </td>
-                @*}*@
+@*                }*@
             </tr>
         }
     </tbody>
@@ -91,14 +92,28 @@
 
 
 @code {
-    private List<Boards> boards = new List<Boards>(){new Boards()};
+    private List<Boards> boards = new List<Boards>();
+    private string URL = "";
 
-    private async Task Rent(){
-        boards.Add(new Boards());
+    protected async override Task OnInitializedAsync()
+    {
+        bool authenticated = await httpClient.GetFromJsonAsync<bool>("https://localhost:7278/api/User");
+        if (authenticated)
+        {
+            URL = "https://localhost:7244/api/Boards?api-version=2.0";
+        }
+        else{
+            URL = "https://localhost:7244/api/Boards?api-version=1.0";
+        }
+        boards = await httpClient.GetFromJsonAsync<List<Boards>>(URL);
     }
 
-    private async Task Details(){
+    private async Task Rent(){
 
+    }
+
+    private void Details(int ID){
+        navigationManager.NavigateTo($"/details/{ID}");
     }
 
     private async Task Edit()
