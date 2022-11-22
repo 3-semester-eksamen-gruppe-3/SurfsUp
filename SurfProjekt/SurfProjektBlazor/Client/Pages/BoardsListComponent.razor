@@ -7,8 +7,20 @@
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 <h3>Surf Boards</h3>
+ 
 
-<table class="table">
+@if (boards == null)
+{
+    <p><em>Loading...</em></p>
+}
+
+
+else
+{
+    <p>
+        <button @onclick="Create" class="btn btn-primary">Opret ny</button>
+    </p>
+    <table class="table">
     <thead>
         <tr>
             <th>
@@ -49,7 +61,7 @@
                     <img src="@item.Image" width="100px" height="100px" alt="Billede ikke fundet">
                 </td>
                 <td>
-                    @item.Name
+                    @item.Name                   
                 </td>
                 <td>
                     @item.Length
@@ -73,8 +85,10 @@
             @Html.DisplayFor(modelItem => item.Equipment)
             </td>*@
                 <td>
+
                     <button style="background-color:white;border:none" @onclick="() => Rent(item.Id)">Udlej</button>|
                     <button style="background-color:white;border:none" @onclick="() => Details(item.Id)">Detaljer</button>
+
                 </td>
                 <AuthorizeView Roles="admin">
                     <td>
@@ -88,17 +102,26 @@
         }
     </tbody>
 </table>
+}
+
 
 
 @code {
-    private List<Boards> boards = new List<Boards>();
+
+
+    private List<Boards> boards;
     private string URL = "";
 
     private List<string> currentUserRoles = new List<string>();
 
     protected async override Task OnInitializedAsync()
     {
-        if(await isAuthenticated()){
+
+        bool authenticated = false;
+        //bool authenticated = await httpClient.GetFromJsonAsync<bool>("https://localhost:7278/api/User");
+        if (authenticated)
+        {
+
             URL = "https://localhost:7244/api/Boards?api-version=2.0";
         }
         else{
@@ -112,18 +135,24 @@
 
     }
 
+    private void Create(){
+        navigationManager.NavigateTo("/CreateBoard");
+    }
+
     private void Details(int ID){
         navigationManager.NavigateTo($"/details/{ID}");
     }
 
-    private async Task Edit(int ID)
-    {
 
+    private void Edit(int ID)
+
+    {
+        navigationManager.NavigateTo($"/UpdateBoard/{ID}");
     }
 
     private async Task Delete(int ID)
     {
-
+        navigationManager.NavigateTo($"/DeleteBoard/{ID}");
     }
 
     private async Task<bool> isAuthenticated(){
