@@ -90,12 +90,12 @@ else
                     <button style="background-color:white;border:none" @onclick="() => Details(item.Id)">Detaljer</button>
 
                 </td>
-                <AuthorizeView Roles="admin">
+                @*<AuthorizeView Roles="admin">*@
                     <td>
                         |<button style="background-color:white;border:none" @onclick="() => Edit(item.Id)">Rediger</button>|
                         <button style="background-color:white;border:none" @onclick="() => Delete(item.Id)">Slet</button>
                     </td>
-                </AuthorizeView>
+                @*</AuthorizeView>*@
                 
                 
             </tr>
