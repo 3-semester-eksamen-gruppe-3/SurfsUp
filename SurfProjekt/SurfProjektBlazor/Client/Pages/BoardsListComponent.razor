@@ -6,6 +6,7 @@
 @inject HttpClient httpClient
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+
 <h3>Surf Boards</h3>
  
 
@@ -17,11 +18,13 @@
 
 else
 {
-    <p>
-        <button @onclick="Create" class="btn btn-primary">Opret ny</button>
-    </p>
+    <AuthorizeView Roles="Admin,Udlejer">
+        <p>
+            <button @onclick="Create" class="btn btn-primary">Opret ny</button>
+        </p>
+    </AuthorizeView>
     <table class="table">
-    <thead>
+        <thead>
         <tr>
             <th>
                 Image
@@ -90,15 +93,15 @@ else
                     <button style="background-color:white;border:none" @onclick="() => Details(item.Id)">Detaljer</button>
 
                 </td>
-                @*<AuthorizeView Roles="admin">*@
-                    <td>
-                        |<button style="background-color:white;border:none" @onclick="() => Edit(item.Id)">Rediger</button>|
-                        <button style="background-color:white;border:none" @onclick="() => Delete(item.Id)">Slet</button>
-                    </td>
-                @*</AuthorizeView>*@
-                
-                
-            </tr>
+                    <AuthorizeView Roles="Admin">
+                            <td>
+                                |<button style="background-color:white;border:none" @onclick="() => Edit(item.Id)">Rediger</button>|
+                                <button style="background-color:white;border:none" @onclick="() => Delete(item.Id)">Slet</button>
+                            </td>
+                    </AuthorizeView>
+
+
+                </tr>
         }
     </tbody>
 </table>

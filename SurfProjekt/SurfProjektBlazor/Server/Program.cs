@@ -17,10 +17,17 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddIdentityServer()
-    .AddApiAuthorization<IdentityUser, ApplicationDbContext>();
+    .AddApiAuthorization<IdentityUser, ApplicationDbContext>(options => {
+        options.IdentityResources["openid"].UserClaims.Add("name");
+        options.ApiResources.Single().UserClaims.Add("name");
+        options.IdentityResources["openid"].UserClaims.Add("role");
+        options.ApiResources.Single().UserClaims.Add("role");
+    });;
 
 builder.Services.AddAuthentication()
     .AddIdentityServerJwt();
+
+
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
