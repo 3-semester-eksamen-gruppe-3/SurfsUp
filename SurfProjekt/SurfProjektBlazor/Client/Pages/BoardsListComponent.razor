@@ -117,11 +117,10 @@ else
     protected async override Task OnInitializedAsync()
     {
 
-        bool authenticated = false;
+        //bool authenticated = false;
         //bool authenticated = await httpClient.GetFromJsonAsync<bool>("https://localhost:7278/api/User");
-        if (authenticated)
+        if (await isAuthenticated())
         {
-
             URL = "https://localhost:7244/api/Boards?api-version=2.0";
         }
         else{

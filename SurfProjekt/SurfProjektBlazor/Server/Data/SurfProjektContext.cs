@@ -1,13 +1,13 @@
 ﻿using Duende.IdentityServer.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using SurfProjektBlazor.Server.Models;
 using SurfProjektBlazor.Shared;
 
 namespace SurfProjektBlazor.Server.Data
 {
-    public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
+    public class ApplicationDbContext : ApiAuthorizationDbContext<IdentityUser>
     {
         public ApplicationDbContext(
             DbContextOptions options,

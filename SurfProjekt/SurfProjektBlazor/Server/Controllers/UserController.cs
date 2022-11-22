@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SurfProjektBlazor.Server.Models;
 
 namespace SurfProjektBlazor.Server.Controllers
 {
@@ -9,8 +8,8 @@ namespace SurfProjektBlazor.Server.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private SignInManager<ApplicationUser> _signInManager;
-        public UserController(SignInManager<ApplicationUser> signInManager)
+        private SignInManager<IdentityUser> _signInManager;
+        public UserController(SignInManager<IdentityUser> signInManager)
         {
             _signInManager = signInManager;
         }
