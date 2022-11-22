@@ -1,4 +1,4 @@
-﻿@page "/details/{ID:int}"
+﻿@page "/DeleteBoard/{ID:int}"
 @using SurfProjektBlazor.Shared
 @inject HttpClient httpClient
 @inject NavigationManager navigationManager
@@ -50,8 +50,11 @@
             <dd class="col-sm-10">
                 @board.Price
             </dd>
+            <dt class="col-sm-2">
+                <button @onclick="delete" class="btn btn-danger">Slet</button>
+            </dt>
             @*<dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Equipment)
+        @Html.DisplayNameFor(model => model.Equipment)
             </dt>
             <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Equipment)
@@ -80,10 +83,15 @@ else{
         board = await httpClient.GetFromJsonAsync<Boards>(URL);
     }
 
-     public async Task Delete()
+    public void BackToList()
+    {
+        navigationManager.NavigateTo("/BoardsList");
+    }
+
+    public async Task delete()
     {
         HttpResponseMessage response;
-        response = await httpClient.PostAsJsonAsync<Boards>($"https://localhost:7244/api/Boards/updateboard/{ID}", board);
+        response = await httpClient.PostAsJsonAsync<Boards>("https://localhost:7244/api/Boards/deleteboard", board);
 
         if (response.IsSuccessStatusCode)
         {
@@ -91,9 +99,6 @@ else{
         }
     }
 
-      public void BackToList()
-    {
-        navigationManager.NavigateTo("/BoardsList");
-    }
-
 }
+
+

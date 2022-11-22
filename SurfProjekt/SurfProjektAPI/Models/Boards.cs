@@ -54,7 +54,7 @@ namespace SurfProjekt.Models
             }
         }
 
-        public ICollection<Lease> leases { get; set; }
+        public ICollection<Lease>? leases { get; set; }
 
         public Boards()
         {

@@ -168,5 +168,60 @@ namespace SurfProjektAPI.Controllers
         {
             return _context.Boards.Any(e => e.Id == id);
         }
+
+        [HttpPost("createboard")]
+        public async Task<IActionResult> CreateBoard([FromBody] Boards boards)
+        {
+            try
+            {
+                boards.leases = null;
+                _context.Boards.Add(boards);
+                await _context.SaveChangesAsync();
+            }
+
+            catch (Exception e)
+            {
+                return Conflict(e.Message);
+            }
+            return Ok(boards);
+        }
+
+        [HttpPost("updateboard/{id}")]
+        public async Task<IActionResult> Edit(int id, [FromBody] Boards boards)
+        {
+            try
+            {
+                _context.Update(boards);
+                await _context.SaveChangesAsync();
+                return Ok(boards);
+            }
+
+            catch (Exception e)
+            {
+                return Conflict(e.Message);
+            }
+        }
+
+        [HttpPost("deleteboard")]
+        public async Task<IActionResult> Delete(Boards boards)
+        {
+            try
+            {
+                if (await _context.Boards.AnyAsync(m => m.Id == boards.Id))
+                {
+                    _context.Boards.Remove(boards);
+                    await _context.SaveChangesAsync();
+                }
+                return Ok(boards);
+            }
+            catch (Exception e)
+            {
+                return Conflict(e.Message);
+            }
+
+        }
+
+
+
     }
 }
