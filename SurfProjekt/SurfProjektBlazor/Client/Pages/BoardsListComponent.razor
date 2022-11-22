@@ -1,9 +1,11 @@
 ﻿@page "/BoardsList"
 @using Microsoft.AspNetCore.Authorization
 @using SurfProjektBlazor.Shared
+@using Microsoft.AspNetCore.Identity
 @inject IAuthorizationService AuthorizationService
 @inject HttpClient httpClient
 @inject NavigationManager navigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 <h3>Surf Boards</h3>
  
 
@@ -82,21 +84,20 @@ else
                 @* <td>
             @Html.DisplayFor(modelItem => item.Equipment)
             </td>*@
-@*                @if ((AuthorizationService.AuthorizeAsync(user, ConstantsRole.Roles.Admin)).Succeeded)
-                {*@
                 <td>
-                    <button style="background-color:white;border:none" @onclick="() => Edit(item.Id)">Rediger</button> |
-                    <button style="background-color:white;border:none" @onclick="() => Details(item.Id)">Detaljer</button> |
-                    <button style="background-color:white;border:none" @onclick="() => Delete(item.Id)">Slet</button>
+
+                    <button style="background-color:white;border:none" @onclick="() => Rent(item.Id)">Udlej</button>|
+                    <button style="background-color:white;border:none" @onclick="() => Details(item.Id)">Detaljer</button>
+
                 </td>
-@*                }
-                else
-                {*@
-                <td>
-                    <button style="background-color:white;border:none" @onclick="() => Details(item.Id)">Detaljer</button>|
-                    <button style="background-color:white;border:none" @onclick=Rent>Udlej</button>
-                </td>
-@*                }*@
+                <AuthorizeView Roles="admin">
+                    <td>
+                        |<button style="background-color:white;border:none" @onclick="() => Edit(item.Id)">Rediger</button>|
+                        <button style="background-color:white;border:none" @onclick="() => Delete(item.Id)">Slet</button>
+                    </td>
+                </AuthorizeView>
+                
+                
             </tr>
         }
     </tbody>
@@ -111,21 +112,26 @@ else
     private List<Boards> boards;
     private string URL = "";
 
+    private List<string> currentUserRoles = new List<string>();
+
     protected async override Task OnInitializedAsync()
     {
+
         bool authenticated = false;
         //bool authenticated = await httpClient.GetFromJsonAsync<bool>("https://localhost:7278/api/User");
         if (authenticated)
         {
+
             URL = "https://localhost:7244/api/Boards?api-version=2.0";
         }
         else{
             URL = "https://localhost:7244/api/Boards?api-version=1.0";
         }
+
         boards = await httpClient.GetFromJsonAsync<List<Boards>>(URL);
     }
 
-    private async Task Rent(){
+    private async Task Rent(int ID){
 
     }
 
@@ -137,7 +143,9 @@ else
         navigationManager.NavigateTo($"/details/{ID}");
     }
 
+
     private void Edit(int ID)
+
     {
         navigationManager.NavigateTo($"/UpdateBoard/{ID}");
     }
@@ -145,6 +153,15 @@ else
     private async Task Delete(int ID)
     {
         navigationManager.NavigateTo($"/DeleteBoard/{ID}");
+    }
+
+    private async Task<bool> isAuthenticated(){
+        var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        return authenticationState.User.Identity.IsAuthenticated;
+    }
+
+    private async Task Roles(){
+        currentUserRoles = await httpClient.GetFromJsonAsync<List<string>>("api/GetUserRoles");
     }
 
 }
