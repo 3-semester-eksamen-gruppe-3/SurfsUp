@@ -5,8 +5,20 @@
 @inject HttpClient httpClient
 @inject NavigationManager navigationManager
 <h3>Surf Boards</h3>
+ 
 
-<table class="table">
+@if (boards == null)
+{
+    <p><em>Loading...</em></p>
+}
+
+
+else
+{
+    <p>
+        <button @onclick="Create" class="btn btn-primary">Opret ny</button>
+    </p>
+    <table class="table">
     <thead>
         <tr>
             <th>
@@ -47,7 +59,7 @@
                     <img src="@item.Image" width="100px" height="100px" alt="Billede ikke fundet">
                 </td>
                 <td>
-                    @item.Name
+                    @item.Name                   
                 </td>
                 <td>
                     @item.Length
@@ -73,9 +85,9 @@
 @*                @if ((AuthorizationService.AuthorizeAsync(user, ConstantsRole.Roles.Admin)).Succeeded)
                 {*@
                 <td>
-                    <button style="background-color:white;border:none" @onclick=Edit>Rediger</button> |
+                    <button style="background-color:white;border:none" @onclick="() => Edit(item.Id)">Rediger</button> |
                     <button style="background-color:white;border:none" @onclick="() => Details(item.Id)">Detaljer</button> |
-                    <button style="background-color:white;border:none" @onclick=Delete>Slet</button>
+                    <button style="background-color:white;border:none" @onclick="() => Delete(item.Id)">Slet</button>
                 </td>
 @*                }
                 else
@@ -89,15 +101,20 @@
         }
     </tbody>
 </table>
+}
+
 
 
 @code {
-    private List<Boards> boards = new List<Boards>();
+
+
+    private List<Boards> boards;
     private string URL = "";
 
     protected async override Task OnInitializedAsync()
     {
-        bool authenticated = await httpClient.GetFromJsonAsync<bool>("https://localhost:7278/api/User");
+        bool authenticated = false;
+        //bool authenticated = await httpClient.GetFromJsonAsync<bool>("https://localhost:7278/api/User");
         if (authenticated)
         {
             URL = "https://localhost:7244/api/Boards?api-version=2.0";
@@ -112,18 +129,22 @@
 
     }
 
+    private void Create(){
+        navigationManager.NavigateTo("/CreateBoard");
+    }
+
     private void Details(int ID){
         navigationManager.NavigateTo($"/details/{ID}");
     }
 
-    private async Task Edit()
+    private void Edit(int ID)
     {
-
+        navigationManager.NavigateTo($"/UpdateBoard/{ID}");
     }
 
-    private async Task Delete()
+    private async Task Delete(int ID)
     {
-
+        navigationManager.NavigateTo($"/DeleteBoard/{ID}");
     }
 
 }

@@ -54,7 +54,7 @@ namespace SurfProjektBlazor.Shared
             }
         }
 
-        public ICollection<Lease> leases { get; set; }
+        public ICollection<Lease>? leases { get; set; }
 
         public Boards()
         {
