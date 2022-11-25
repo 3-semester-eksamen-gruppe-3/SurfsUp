@@ -4,6 +4,9 @@
 @inject NavigationManager Navigation
 @inject SignOutSessionStateManager SignOutManager
 
+<AuthorizeView Roles="Admin">
+    <a href="RoleEditor">Role editor</a>
+</AuthorizeView>
 <AuthorizeView>
     <Authorized>
         <a href="authentication/profile">Hello, @context.User.Identity?.Name!</a>

@@ -1,0 +1,22 @@
+﻿@page "/RoleEditor"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@inject HttpClient _httpClient
+@attribute [Authorize(Roles = "Admin")]
+<h3>Role editor</h3>
+
+<p>Opret en ny rolle:</p>
+<input class="text" @bind="role"/>
+<button @onclick=CreateRole>Opret rolle</button>
+
+@code {
+    private string role;
+    private string message = "djfj";
+
+    private async Task CreateRole(){
+        if(role != ""){
+            await _httpClient.GetFromJsonAsync<bool>($"api/user/{role}");
+            role = "";
+        }
+    }
+}
