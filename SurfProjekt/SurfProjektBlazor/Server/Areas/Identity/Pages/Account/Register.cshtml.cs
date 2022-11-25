@@ -55,6 +55,8 @@ namespace SurfProjektBlazor.Server.Areas.Identity.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; }
 
+        public IEnumerable<IdentityRole> RoleList { get; set; }
+
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -110,6 +112,7 @@ namespace SurfProjektBlazor.Server.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            RoleList = _roleManager.Roles.Where(r => r.Name != "Admin").ToList();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -140,11 +143,9 @@ namespace SurfProjektBlazor.Server.Areas.Identity.Pages.Account
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    var role = new IdentityRole(Input.Role);
-                    var addRoleResult = await _roleManager.CreateAsync(role);
                     var addUserRoleResult = await _userManager.AddToRoleAsync(user, Input.Role);
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount && addRoleResult.Succeeded && addUserRoleResult.Succeeded)
+                    if (_userManager.Options.SignIn.RequireConfirmedAccount && addUserRoleResult.Succeeded)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
