@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SurfProjektBlazor.Server.Data;
+using System.Drawing;
 
 namespace SurfProjektBlazor.Server.Controllers
 {
@@ -13,11 +14,14 @@ namespace SurfProjektBlazor.Server.Controllers
         private SignInManager<IdentityUser> _signInManager;
         private RoleManager<IdentityRole> _roleManager;
         private ApplicationDbContext _context;
-        public UserController(SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
+        private UserManager<IdentityUser> _userManager;
+
+        public UserController(SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _signInManager = signInManager;
             _roleManager = roleManager;
             _context = context;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -34,10 +38,22 @@ namespace SurfProjektBlazor.Server.Controllers
             return result.Succeeded;
         }
 
+        [HttpGet ("role")]
+        public async Task<string> GetRole()
+        {
+            return (await _userManager.GetRolesAsync(await _userManager.GetUserAsync(User)))[0];
+        }
+
         [HttpGet ("roles")]
         public async Task<IEnumerable<IdentityRole>> GetRoles()
         {
             return _context.Roles.AsEnumerable<IdentityRole>();
+        }
+
+        [HttpGet ("UserId")]
+        public async Task<string> GetUserId()
+        {
+            return (await _userManager.GetUserAsync(User)).Id;
         }
     }
 }

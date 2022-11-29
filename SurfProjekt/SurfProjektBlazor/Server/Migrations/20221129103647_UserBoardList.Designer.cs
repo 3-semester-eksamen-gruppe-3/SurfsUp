@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SurfProjektBlazor.Server.Data;
 
@@ -11,9 +12,10 @@ using SurfProjektBlazor.Server.Data;
 namespace SurfProjektBlazor.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221129103647_UserBoardList")]
+    partial class UserBoardList
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,7 +107,7 @@ namespace SurfProjektBlazor.Server.Migrations
 
                     b.HasIndex("Use");
 
-                    b.ToTable("Keys", (string)null);
+                    b.ToTable("Keys");
                 });
 
             modelBuilder.Entity("Duende.IdentityServer.EntityFramework.Entities.PersistedGrant", b =>
@@ -422,7 +424,7 @@ namespace SurfProjektBlazor.Server.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("Boards", (string)null);
+                    b.ToTable("Boards");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Boards");
                 });
@@ -446,7 +448,7 @@ namespace SurfProjektBlazor.Server.Migrations
 
                     b.HasIndex("SUPBoardID");
 
-                    b.ToTable("Equipment", (string)null);
+                    b.ToTable("Equipment");
                 });
 
             modelBuilder.Entity("SurfProjektBlazor.Shared.Lease", b =>
@@ -476,7 +478,7 @@ namespace SurfProjektBlazor.Server.Migrations
 
                     b.HasIndex("BoardID");
 
-                    b.ToTable("Lease", (string)null);
+                    b.ToTable("Lease");
                 });
 
             modelBuilder.Entity("SurfProjektBlazor.Server.Models.ApplicationUser", b =>
