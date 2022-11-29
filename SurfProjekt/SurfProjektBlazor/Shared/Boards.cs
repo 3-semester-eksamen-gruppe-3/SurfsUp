@@ -31,6 +31,8 @@ namespace SurfProjektBlazor.Shared
         [Display(Name = "")]
         public string? Image { get; set; }
 
+        public string? ApplicationUserId { get; set; }
+
         public bool IsPremium { get; set; }
 
         private bool isRented;
