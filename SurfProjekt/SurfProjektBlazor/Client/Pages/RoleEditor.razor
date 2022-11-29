@@ -6,17 +6,23 @@
 <h3>Role editor</h3>
 
 <p>Opret en ny rolle:</p>
-<input class="text" @bind="role"/>
+<input class="text" @bind="role" @oninput="ClearRoleCreationMessage"/>
 <button @onclick=CreateRole>Opret rolle</button>
+<p>@roleCreationMessage</p>
 
 @code {
     private string role;
-    private string message = "djfj";
+    private string roleCreationMessage = "";
 
     private async Task CreateRole(){
         if(role != ""){
             await _httpClient.GetFromJsonAsync<bool>($"api/user/{role}");
             role = "";
+            roleCreationMessage = "Rollen blev oprettet";
         }
+    }
+
+    private void ClearRoleCreationMessage(){
+        roleCreationMessage = "";
     }
 }
