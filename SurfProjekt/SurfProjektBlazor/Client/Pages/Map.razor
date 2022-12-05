@@ -1,0 +1,33 @@
+﻿@page "/map"
+@using GoogleMaps.LocationServices
+@using GoogleMapsComponents
+@using GoogleMapsComponents.Maps
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<h1>Kortoversigt</h1>
+<div style="height:500px">
+<GoogleMap @ref="@map1" Id="map1" Options="@mapOptions" Height="100%"></GoogleMap>
+</div>
+@functions {
+	private GoogleMap map1;
+	private MapOptions mapOptions;	
+
+	protected override void OnInitialized()
+	{
+
+
+		mapOptions = new MapOptions()
+		{
+			Zoom = 13,
+			Center = new LatLngLiteral()
+			{
+				Lat = 55.39594,
+				Lng = 10.38831
+
+
+			},
+			MapTypeId = MapTypeId.Roadmap
+		};
+	}		
+}
