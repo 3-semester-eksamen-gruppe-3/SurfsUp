@@ -1,4 +1,5 @@
 ﻿@page "/details/{ID:int}"
+@using Microsoft.AspNetCore.Identity
 @using SurfProjektBlazor.Shared
 @inject HttpClient httpClient
 @inject NavigationManager navigationManager
@@ -7,7 +8,8 @@
 @if(board != null){
     <div>
     <hr />
-        <dl class="row">
+      <img src="@board.Image" width="100px" height="100px" alt="Billede ikke fundet">
+        <dl class="row">   
             <dt class="col-sm-2">
                 Name
             </dt>
@@ -50,6 +52,16 @@
             <dd class="col-sm-10">
                 @board.Price
             </dd>
+              <dt class="col-sm-2">
+                Oprettet af
+            </dt>
+            <dd class="col-sm-10">
+                @foreach (var item in userName)
+                {
+                    @item.UserName
+                }
+              
+            </dd>
             @*<dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Equipment)
             </dt>
@@ -73,11 +85,17 @@ else{
     private Boards? board;
     string URL = "";
 
+    private List<IdentityUser>? userName; 
+
     protected async override Task OnInitializedAsync()
     {
+        
+
+
         ID = ID;
         URL = $"https://localhost:7244/api/Boards/{ID}?api-version=2.0";
         board = await httpClient.GetFromJsonAsync<Boards>(URL);
+        userName = await httpClient.GetFromJsonAsync<List<IdentityUser>>($"https://localhost:7244/api/Boards/GetUser/{board.ApplicationUserId}?api-version=1.0");
     }
 
      public async Task Delete()

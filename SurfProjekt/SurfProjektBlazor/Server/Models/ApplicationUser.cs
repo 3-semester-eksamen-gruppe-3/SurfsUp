@@ -6,5 +6,7 @@ namespace SurfProjektBlazor.Server.Models
     public class ApplicationUser : IdentityUser
     {
         public List<Boards> OwnedBoards { get; set; }
+
+
     }
 }

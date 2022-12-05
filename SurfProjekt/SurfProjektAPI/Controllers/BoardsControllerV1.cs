@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SurfProjekt.Models;
 using SurfProjektAPI.Data;
-
 
 namespace SurfProjektAPI.Controllers
 {
@@ -219,6 +219,14 @@ namespace SurfProjektAPI.Controllers
                 return Conflict(e.Message);
             }
 
+        }
+        [HttpGet("GetUser/{ApplicationUserId}")]
+
+
+        public async Task<ActionResult<List<IdentityUser>>> getUser(string ApplicationUserId)
+        {
+            var user = _context.Users.Where(a => a.Id == ApplicationUserId);
+            return Ok(user);
         }
 
 
