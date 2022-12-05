@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using SurfProjektBlazor.Server.Data;
+using Microsoft.AspNetCore.ResponseCompression;
+using SurfProjektBlazor.Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,14 +29,24 @@ builder.Services.AddIdentityServer()
 builder.Services.AddAuthentication()
     .AddIdentityServerJwt();
 
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "application/octet-stream" });
+});
 
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
+
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+app.UseResponseCompression();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -67,6 +79,7 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapControllers();
+app.MapHub<ChatHub>("/chathub");
 app.MapFallbackToFile("index.html");
 
 app.Run();

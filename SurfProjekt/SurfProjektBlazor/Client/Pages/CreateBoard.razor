@@ -2,6 +2,7 @@
 @using SurfProjektBlazor.Shared
 @inject HttpClient Http
 @inject NavigationManager navigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <h1>Opret ny</h1>
 
@@ -74,6 +75,8 @@
     private Boards SelectedBoard = new Boards();
 
 
+
+
     protected override async Task OnInitializedAsync()
     {
 
@@ -84,13 +87,22 @@
         //if((await Http.GetFromJsonAsync<string>("api/role")).ToLower() == "udlejer"){
         //    SelectedBoard.ApplicationUserId = await Http.GetFromJsonAsync<string>("api/userid");
         //}
-        HttpResponseMessage response;
-        response = await Http.PostAsJsonAsync<Boards>("https://localhost:7244/api/Boards/createboard", SelectedBoard);
+        var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authenticationState.User;
 
-        if (response.IsSuccessStatusCode)
+        if (user.Identity.IsAuthenticated)
         {
-            navigationManager.NavigateTo("/BoardsList");
+            SelectedBoard.ApplicationUserId = user.FindFirst(u => u.Type.Contains("sub"))?.Value;
+
+            HttpResponseMessage response;
+            response = await Http.PostAsJsonAsync<Boards>("https://localhost:7244/api/Boards/createboard", SelectedBoard);
+
+            if (response.IsSuccessStatusCode)
+            {
+                navigationManager.NavigateTo("/BoardsList");
+            }
         }
+
 
     }
 

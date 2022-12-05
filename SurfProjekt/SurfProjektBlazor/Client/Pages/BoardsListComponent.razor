@@ -22,6 +22,7 @@ else
         <p>
             <button @onclick="Create" class="btn btn-primary">Opret ny</button>
         </p>
+        <p>Hej @userName! Du kan redigere/slette dine surfbrætter nedenunder</p>
     </AuthorizeView>
     <table class="table">
         <thead>
@@ -57,6 +58,50 @@ else
         </tr>
     </thead>
     <tbody>
+          @foreach (var item in ownBoards ?? Enumerable.Empty<Boards>())
+        {
+            <tr style="background-color:gainsboro">
+                <td>
+                    <img src="@item.Image" width="100px" height="100px" alt="Billede ikke fundet">
+                </td>
+                <td>
+                    @item.Name                   
+                </td>
+                <td>
+                    @item.Length
+                </td>
+                <td>
+                    @item.Width
+                </td>
+                <td>
+                    @item.Thickness
+                </td>
+                <td>
+                    @item.Volume
+                </td>
+                <td>
+                    @item.Type
+                </td>
+                <td>
+                    @item.Price
+                </td>
+                @* <td>
+            @Html.DisplayFor(modelItem => item.Equipment)
+            </td>*@
+                <td>
+
+           
+                    <button class="btn btn-success" @onclick="() => Details(item.Id)">Detaljer</button>
+
+                </td>
+                    <AuthorizeView Roles="Admin,Udlejer">
+                            <td>
+                                |<button class="btn btn-success" @onclick="() => Edit(item.Id)">Rediger</button>|
+                                <button class="btn btn-danger" @onclick="() => Delete(item.Id)">Slet</button>
+                            </td>
+                    </AuthorizeView>  
+                </tr>
+        }
         @foreach (var item in boards)
         {
             <tr>
@@ -89,18 +134,17 @@ else
             </td>*@
                 <td>
 
-                    <button style="background-color:white;border:none" @onclick="() => Rent(item.Id)">Udlej</button>|
-                    <button style="background-color:white;border:none" @onclick="() => Details(item.Id)">Detaljer</button>
-
+                    <button class="btn btn-primary" @onclick="() => Rent(item.Id)">Udlej</button>|
+                    <button class="btn btn-primary" @onclick="() => Details(item.Id)">Detaljer</button>
                 </td>
                     <AuthorizeView Roles="Admin">
                             <td>
-                                |<button style="background-color:white;border:none" @onclick="() => Edit(item.Id)">Rediger</button>|
-                                <button style="background-color:white;border:none" @onclick="() => Delete(item.Id)">Slet</button>
+                                |<button class="btn btn-primary" @onclick="() => Edit(item.Id)">Rediger</button>|
+                                <button class="btn btn-primary" @onclick="() => Delete(item.Id)">Slet</button>
                             </td>
                     </AuthorizeView>
 
-
+                    
                 </tr>
         }
     </tbody>
@@ -110,21 +154,27 @@ else
 
 
 @code {
-
-
-    private List<Boards> boards;
+    private List<Boards>? ownBoards = null;
+    private List<Boards>? boards;
     private string URL = "";
+
+    private string userName;
 
     private List<string> currentUserRoles = new List<string>();
 
     protected async override Task OnInitializedAsync()
     {
+        var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authenticationState.User;
+        userName = user.Identity.Name;
 
         //bool authenticated = false;
         //bool authenticated = await httpClient.GetFromJsonAsync<bool>("https://localhost:7278/api/User");
         if (await isAuthenticated())
         {
+
             URL = "https://localhost:7244/api/Boards?api-version=2.0";
+            ownBoards = await httpClient.GetFromJsonAsync<List<Boards>>("api/boards/getboards");
         }
         else{
             URL = "https://localhost:7244/api/Boards?api-version=1.0";

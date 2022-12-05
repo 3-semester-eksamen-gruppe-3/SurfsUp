@@ -31,6 +31,9 @@ namespace SurfProjekt.Models
         [Display(Name = "")]
         public string? Image { get; set; }
 
+        public string Discriminator { get; set; } = "Boards";
+        public string? ApplicationUserId { get; set; }
+
         public bool IsPremium { get; set; }
 
         private bool isRented;
