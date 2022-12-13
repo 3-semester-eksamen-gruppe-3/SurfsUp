@@ -3,7 +3,7 @@
 @inject HttpClient Http
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
-
+@inject ILocalStorageService localStorage
 <h1>Opret ny</h1>
 
 <hr />
@@ -15,37 +15,37 @@
 
             <div class="form-group">
                 <label >navn</label>
-                <input @bind-value="SelectedBoard.Name" class="form-control" />
+                <input @bind-value="SelectedBoard.Name" class="form-control" @onfocusout="StateManagement" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label >Længde</label>
-                <input @bind-value="SelectedBoard.Length" class="form-control" />
+                <input @bind-value="SelectedBoard.Length" class="form-control" @onfocusout="StateManagement" />
                 <span asp-validation-for="Length" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label >Bredde</label>
-                <input @bind-value="SelectedBoard.Width" class="form-control" />
+                <input @bind-value="SelectedBoard.Width" class="form-control" @onfocusout="StateManagement" />
                 <span asp-validation-for="Width" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label >Tykkelse</label>
-                <input @bind-value="SelectedBoard.Thickness" class="form-control" />
+                <input @bind-value="SelectedBoard.Thickness" class="form-control" @onfocusout="StateManagement" />
                 <span asp-validation-for="Thickness" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label >Volumen</label>
-                <input @bind-value="SelectedBoard.Volume" class="form-control" />
+                <input @bind-value="SelectedBoard.Volume" class="form-control" @onfocusout="StateManagement" />
                 <span asp-validation-for="Volume" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label >Type</label>
-                <input @bind-value="SelectedBoard.Type" class="form-control" />
+                <input @bind-value="SelectedBoard.Type" class="form-control" @onfocusout="StateManagement" />
                 <span asp-validation-for="Type" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label >Pris</label>
-                <input @bind-value="SelectedBoard.Price" class="form-control" />
+                <input @bind-value="SelectedBoard.Price" class="form-control" @onfocusout="StateManagement" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
 @*            <div class="form-group">
@@ -55,7 +55,7 @@
             </div>*@
             <div class="form-group">
                 <label>Billede-url</label>
-                <input @bind-value="SelectedBoard.Image" class="form-control" />
+                <input @bind-value="SelectedBoard.Image" class="form-control" @onfocusout="StateManagement"/>
                 <span asp-validation-for="Image" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -72,14 +72,12 @@
 
 
 @code {
-    private Boards SelectedBoard = new Boards();
-
-
-
+    private Boards? SelectedBoard = new Boards();
 
     protected override async Task OnInitializedAsync()
     {
-
+        //gets the saved inputs from localstorage when refreshing page 
+        SelectedBoard = await localStorage.GetItemAsync<Boards>("board");
     }
 
     public async Task HandleValidSubmit()
@@ -89,6 +87,7 @@
         //}
         var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authenticationState.User;
+      
 
         if (user.Identity.IsAuthenticated)
         {
@@ -102,11 +101,16 @@
                 navigationManager.NavigateTo("/BoardsList");
             }
         }
-
-
     }
 
-    public void BackToList()
+    //method that saves the users input to localstorage (in browser)
+    private async Task StateManagement()
+    {
+        await localStorage.SetItemAsync("board", SelectedBoard);
+       
+    } 
+
+    private void BackToList()
     {
         navigationManager.NavigateTo("/BoardsList");
     }
