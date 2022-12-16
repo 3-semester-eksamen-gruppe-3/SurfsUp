@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SurfProjektBlazor.Server.Data;
 using Microsoft.AspNetCore.ResponseCompression;
 using SurfProjektBlazor.Server.Hubs;
+using SurfProjektBlazor.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,6 +80,7 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapControllers();
+//app.UseRentLimitingMiddleware();
 app.MapHub<ChatHub>("/chathub");
 app.MapFallbackToFile("index.html");
 
