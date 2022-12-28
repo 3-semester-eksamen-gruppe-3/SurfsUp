@@ -6,6 +6,7 @@
 @inject HttpClient httpClient
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IModalService modal
 
 <h3>Surf Boards</h3>
  
@@ -184,7 +185,9 @@ else
     }
 
     private async Task Rent(int ID){
-
+        var IdParamter = new ModalParameters();
+        IdParamter.Add(nameof(RentComponent.ID),ID);
+        modal.Show<RentComponent>("", IdParamter);
     }
 
     private void Create(){
